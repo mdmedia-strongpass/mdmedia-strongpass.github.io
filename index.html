@@ -1,5 +1,571 @@
-<html>
-<body>
-Hello world
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="description" content="Free strong password generator online. Quickly and securely create strong passwords for everyday use." />
+  <meta property="og:title" content="Free Strong Password Generator" />
+  <meta property="og:description" content="Create strong passwords in seconds. A fast and secure online password generator tool." />
+  <title>Free Strong Password Generator | Create Secure Passwords Online</title>
+  <script src="https://cdn.jsdelivr.net/npm/zxcvbn@4.4.2/dist/zxcvbn.min.js"></script>
+  <style>
+		.hidden {
+			display: none;
+		}
+
+		.strength-0 { color: #e53e3e; } /* very weak - červená */
+		.strength-1 { color: #dd6b20; } /* weak - oranžová */
+		.strength-2 { color: #d69e2e; } /* fair - žlutá */
+		.strength-3 { color: #38a169; } /* strong - zelená */
+		.strength-4 { color: #2f855a; } /* very strong - tmavě zelená */
+
+    /* Reset & base */
+    body {
+      margin: 0;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen,
+        Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
+      transition: background-color 0.3s, color 0.3s;
+    }
+    label {
+      cursor: pointer;
+    }
+    input[type="number"] {
+      border: 1px solid #cbd5e0;
+      border-radius: 0.25rem;
+      padding: 0.25rem 0.5rem;
+      width: 5rem;
+      font-size: 1rem;
+      transition: background-color 0.3s, color 0.3s, border-color 0.3s;
+    }
+    input[readonly] {
+      background-color: #f7fafc;
+      color: #1a202c;
+      border: 1px solid #cbd5e0;
+      border-radius: 0.25rem;
+      padding: 0.25rem 0.5rem;
+      font-family: monospace;
+      font-size: 1rem;
+    }
+    button {
+      cursor: pointer;
+      border: none;
+      border-radius: 0.375rem;
+      padding: 0.5rem 1rem;
+      font-size: 1rem;
+      transition: background-color 0.3s;
+    }
+    button:focus {
+      outline: 2px solid #3182ce;
+      outline-offset: 2px;
+    }
+    select {
+      background-color: white;
+      color: #1a202c;
+      border: 1px solid #cbd5e0;
+      border-radius: 0.25rem;
+      padding: 0.25rem 0.5rem;
+      font-size: 1rem;
+      transition: background-color 0.3s, color 0.3s, border-color 0.3s;
+    }
+
+    /* Light Theme */
+    body.light {
+      background-color: #ffffff;
+      color: #1a202c;
+    }
+    body.light input[type="number"],
+    body.light select,
+    body.light input[readonly] {
+      background-color: white;
+      color: #1a202c;
+      border-color: #cbd5e0;
+    }
+    body.light button.generate {
+      background-color: #3182ce;
+      color: white;
+    }
+    body.light button.copy-btn {
+      background-color: #38a169;
+      color: white;
+    }
+    body.light button.copy-btn:hover {
+      filter: brightness(0.9);
+    }
+
+    /* Dark Theme */
+    body.dark {
+      background-color: #1a202c;
+      color: #cbd5e0;
+    }
+    body.dark .bg-ad-placeholder {
+      background-color: #2d3748;
+      color: #cbd5e0;
+    }
+    body.dark input[type="number"],
+    body.dark select,
+    body.dark input[readonly] {
+      background-color: #2d3748;
+      color: #cbd5e0;
+      border-color: #4a5568;
+    }
+    body.dark button.generate {
+      background-color: #63b3ed;
+      color: #1a202c;
+    }
+    body.dark button.copy-btn {
+      background-color: #68d391;
+      color: #1a202c;
+    }
+    body.dark button.copy-btn:hover {
+      filter: brightness(0.9);
+    }
+
+    /* Layout & spacing */
+    .container {
+      max-width: 768px;
+      margin: 2rem auto;
+      padding: 0 1rem;
+    }
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+    .title {
+      font-size: 1.75rem;
+      font-weight: 700;
+    }
+    .controls {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      flex-wrap: wrap;
+    }
+    .form-group {
+      margin-bottom: 1rem;
+    }
+    .checkbox-group {
+      display: flex;
+      gap: 1rem;
+      flex-wrap: wrap;
+      margin-bottom: 1rem;
+    }
+    .output {
+      margin-top: 1rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+    .password-row {
+      display: flex;
+      gap: 0.5rem;
+      align-items: center;
+    }
+    .password-row input[readonly] {
+      flex-grow: 1;
+    }
+    .strength-text {
+      font-weight: 600;
+      margin-top: 1rem;
+    }
+    .info-text {
+      font-size: 0.875rem;
+      color: inherit;
+      margin-top: 0.5rem;
+      max-width: 720px;
+    }
+    .affiliate-links {
+      margin-top: 2rem;
+      font-size: 0.875rem;
+      text-align: center;
+    }
+    .affiliate-links a {
+      color: inherit;
+      text-decoration: underline;
+      margin: 0 0.25rem;
+    }
+    .ad-placeholder {
+      width: 100%;
+      text-align: center;
+      padding: 1rem 0;
+      margin-top: 2rem;
+      margin-bottom: 2rem;
+      font-weight: 600;
+      background-color: #f7fafc;
+      color: #718096;
+      border-radius: 0.25rem;
+    }
+    body.dark .ad-placeholder {
+      background-color: #2d3748;
+      color: #a0aec0;
+    }
+  </style>
+</head>
+<body class="dark" id="body">
+
+  <!-- AdSense placeholders -->
+  <div class="ad-placeholder bg-ad-placeholder">[Ad - Top]</div>
+
+  <div class="container">
+    <header class="header">
+      <h1 class="title" id="title">Strong Password Generator</h1>
+      <div class="controls" aria-label="Settings">
+        <label for="theme-switch" class="sr-only">Theme</label>
+        <select id="theme-switch" aria-label="Theme selector">
+          <option value="light">Light</option>
+          <option value="dark" selected>Dark</option>
+        </select>
+
+        <label for="lang-switch" class="sr-only">Language</label>
+        <select id="lang-switch" aria-label="Language selector">
+          <option value="en" selected>English</option>
+          <option value="de">Deutsch</option>
+          <option value="es">Español</option>
+          <option value="fr">Français</option>
+        </select>
+      </div>
+    </header>
+
+    <div class="form-group">
+      <label for="length" id="label-length">Password length:</label>
+      <select id="length" aria-describedby="length-desc" aria-label="Password length selector">
+        <option value="8">8</option>
+        <option value="12">12</option>
+        <option value="20" selected>20</option>
+        <option value="32">32</option>
+        <option value="custom">Custom</option>
+      </select>
+      <input id="custom-length" type="number" min="1" max="100" placeholder="e.g. 50" class="hidden" aria-label="Custom password length input" />
+    </div>
+
+    <div class="checkbox-group" role="group" aria-labelledby="composition-label">
+      <div>
+        <input type="checkbox" id="lowercase" checked />
+        <label for="lowercase"><span class="translatable" data-key="lowercase">lowercase</span></label>
+      </div>
+      <div>
+        <input type="checkbox" id="uppercase" checked />
+        <label for="uppercase"><span class="translatable" data-key="uppercase">UPPERCASE</span></label>
+      </div>
+      <div>
+        <input type="checkbox" id="numbers" checked />
+        <label for="numbers"><span class="translatable" data-key="numbers">numbers</span></label>
+      </div>
+      <div>
+        <input type="checkbox" id="symbols1" checked />
+        <label for="symbols1"><span class="translatable" data-key="symbols1">common symbols</span></label>
+      </div>
+      <div>
+        <input type="checkbox" id="symbols2" />
+        <label for="symbols2"><span class="translatable" data-key="symbols2">other special characters</span></label>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <input type="checkbox" id="multi-mode" />
+      <label for="multi-mode"><span class="translatable" data-key="generate-multiple">Generate multiple passwords</span></label>
+      <input id="multi-count" type="number" min="1" max="100" placeholder="e.g. 10" class="hidden" aria-label="Number of passwords to generate" />
+    </div>
+
+    <button id="generate-btn" class="generate" aria-label="Generate password button">Generate Password</button>
+
+    <div id="output" class="output" aria-live="polite"></div>
+
+    <p class="strength-text" aria-live="polite">Password strength: <span id="strength">-</span></p>
+    <p class="info-text">Passwords are generated locally in your browser and not sent anywhere.</p>
+    
+    <p class="info-text"><strong>Why Strong Passwords Matter</strong><br>
+A strong password is your first defense against unauthorized access and data theft. It should be at least 12 characters long and include a mix of uppercase and lowercase letters, numbers, and special symbols. Avoid using common words or personal info. Using a password generator helps create unique, hard-to-crack passwords, keeping your accounts safe and secure.</p>
+
+
+    <section class="affiliate-links" aria-label="Affiliate Links">
+      <a href="https://1password.com/" target="_blank" rel="noopener">1Password</a> |
+      <a href="https://bitwarden.com/" target="_blank" rel="noopener">Bitwarden</a> |
+      <a href="https://nordpass.com/" target="_blank" rel="noopener">NordPass</a>
+    </section>
+  </div>
+
+  <div class="ad-placeholder bg-ad-placeholder">[Ad - Bottom]</div>
+
+  <script>
+    // Překlady
+    const translations = {
+      en: {
+        "password-length": "Password length:",
+        lowercase: "lowercase",
+        uppercase: "UPPERCASE",
+        numbers: "numbers",
+        symbols1: "common symbols",
+        symbols2: "other special characters",
+        "generate-multiple": "Generate multiple passwords",
+        "generate-password": "Generate Password",
+        "password-strength": "Password strength:",
+        "password-strength-0": "Very Weak",
+        "password-strength-1": "Weak",
+        "password-strength-2": "Fair",
+        "password-strength-3": "Strong",
+        "password-strength-4": "Very Strong",
+        "copy": "Copy",
+        "copied": "Copied!",
+      },
+      de: {
+        "password-length": "Passwortlänge:",
+        lowercase: "Kleinbuchstaben",
+        uppercase: "GROSSBUCHSTABEN",
+        numbers: "Zahlen",
+        symbols1: "häufige Symbole",
+        symbols2: "andere Sonderzeichen",
+        "generate-multiple": "Mehrere Passwörter generieren",
+        "generate-password": "Passwort generieren",
+        "password-strength": "Passwortstärke:",
+        "password-strength-0": "Sehr schwach",
+        "password-strength-1": "Schwach",
+        "password-strength-2": "Mittel",
+        "password-strength-3": "Stark",
+        "password-strength-4": "Sehr stark",
+        "copy": "Kopieren",
+        "copied": "Kopiert!",
+      },
+      es: {
+        "password-length": "Longitud de la contraseña:",
+        lowercase: "minúsculas",
+        uppercase: "MAYÚSCULAS",
+        numbers: "números",
+        symbols1: "símbolos comunes",
+        symbols2: "otros caracteres especiales",
+        "generate-multiple": "Generar múltiples contraseñas",
+        "generate-password": "Generar contraseña",
+        "password-strength": "Fortaleza de la contraseña:",
+        "password-strength-0": "Muy débil",
+        "password-strength-1": "Débil",
+        "password-strength-2": "Regular",
+        "password-strength-3": "Fuerte",
+        "password-strength-4": "Muy fuerte",
+        "copy": "Copiar",
+        "copied": "¡Copiado!",
+      },
+      fr: {
+        "password-length": "Longueur du mot de passe:",
+        lowercase: "minuscules",
+        uppercase: "MAJUSCULES",
+        numbers: "chiffres",
+        symbols1: "symboles courants",
+        symbols2: "autres caractères spéciaux",
+        "generate-multiple": "Générer plusieurs mots de passe",
+        "generate-password": "Générer le mot de passe",
+        "password-strength": "Force du mot de passe:",
+        "password-strength-0": "Très faible",
+        "password-strength-1": "Faible",
+        "password-strength-2": "Moyen",
+        "password-strength-3": "Fort",
+        "password-strength-4": "Très fort",
+        "copy": "Copier",
+        "copied": "Copié!",
+      },
+    };
+
+    // Výběry elementů
+    const body = document.getElementById("body");
+    const themeSwitch = document.getElementById("theme-switch");
+    const langSwitch = document.getElementById("lang-switch");
+    const lengthSelect = document.getElementById("length");
+    const customLengthInput = document.getElementById("custom-length");
+    const lowercaseCheckbox = document.getElementById("lowercase");
+    const uppercaseCheckbox = document.getElementById("uppercase");
+    const numbersCheckbox = document.getElementById("numbers");
+    const symbols1Checkbox = document.getElementById("symbols1");
+    const symbols2Checkbox = document.getElementById("symbols2");
+    const multiModeCheckbox = document.getElementById("multi-mode");
+    const multiCountInput = document.getElementById("multi-count");
+    const generateBtn = document.getElementById("generate-btn");
+    const outputDiv = document.getElementById("output");
+    const strengthSpan = document.getElementById("strength");
+    const titleH1 = document.getElementById("title");
+    const labelLength = document.getElementById("label-length");
+
+    // Základní znaky pro generování hesel
+    const charset = {
+      lowercase: "abcdefghijklmnopqrstuvwxyz",
+      uppercase: "ABCDEFGHIJKLMNOPQRSTUVWXYZ",
+      numbers: "0123456789",
+      symbols1: "!@#$%^&*()_+-=[]{}|;:,.<>/?",
+      symbols2: "`~\"'\\",
+    };
+
+    // Překlad
+    function applyTranslations(lang) {
+      const t = translations[lang] || translations.en;
+      labelLength.textContent = t["password-length"];
+      titleH1.textContent = "Strong Password Generator"; // Můžeš přidat překlady i sem, pokud chceš
+
+      document.querySelectorAll(".translatable").forEach((el) => {
+        const key = el.getAttribute("data-key");
+        if (t[key]) el.textContent = t[key];
+      });
+
+      generateBtn.textContent = t["generate-password"];
+      strengthSpan.textContent = "-";
+    }
+
+    // Změna viditelnosti custom-length podle výběru délky hesla
+    function updateCustomLengthVisibility() {
+			if (lengthSelect.value === "custom") {
+				customLengthInput.classList.remove("hidden");
+				customLengthInput.focus();
+			} else {
+				customLengthInput.classList.add("hidden");
+			}
+		}
+
+		lengthSelect.addEventListener("change", updateCustomLengthVisibility);
+
+    // Změna viditelnosti multi-count podle zaškrtnutí multiple passwords
+    multiModeCheckbox.addEventListener("change", () => {
+      if (multiModeCheckbox.checked) {
+        multiCountInput.classList.remove("hidden");
+        multiCountInput.focus();
+      } else {
+        multiCountInput.classList.add("hidden");
+      }
+    });
+
+    // Funkce generování jednoho hesla podle aktuálních nastavení
+    function generatePassword() {
+      let length = lengthSelect.value === "custom" ? parseInt(customLengthInput.value) : parseInt(lengthSelect.value);
+      if (isNaN(length) || length < 1) {
+        alert("Please enter a valid password length.");
+        return "";
+      }
+
+      let chars = "";
+      if (lowercaseCheckbox.checked) chars += charset.lowercase;
+      if (uppercaseCheckbox.checked) chars += charset.uppercase;
+      if (numbersCheckbox.checked) chars += charset.numbers;
+      if (symbols1Checkbox.checked) chars += charset.symbols1;
+      if (symbols2Checkbox.checked) chars += charset.symbols2;
+
+      if (!chars) {
+        alert("Please select at least one character set.");
+        return "";
+      }
+
+      let password = "";
+      for (let i = 0; i < length; i++) {
+        password += chars.charAt(Math.floor(Math.random() * chars.length));
+      }
+      return password;
+    }
+
+    // Zobrazení síly hesla (pomocí zxcvbn)
+		function showStrength(pwd, lang) {
+			if (!pwd) {
+				strengthSpan.textContent = "-";
+				strengthSpan.className = ""; // odeber třídy
+				return;
+			}
+			const t = translations[lang] || translations.en;
+			const result = zxcvbn(pwd);
+			const score = result.score; // 0 - 4
+			strengthSpan.textContent = t[`password-strength-${score}`] || "-";
+
+			// Odeber všechny strength-* třídy
+			strengthSpan.className = "";
+			// Přidej aktuální třídu podle skóre
+			strengthSpan.classList.add(`strength-${score}`);
+		}
+
+
+    // Kopírování hesla do schránky
+    function copyToClipboard(text, btn) {
+      navigator.clipboard.writeText(text).then(() => {
+        const original = btn.textContent;
+        btn.textContent = translations[langSwitch.value]["copied"];
+        setTimeout(() => {
+          btn.textContent = original;
+        }, 1500);
+      });
+    }
+
+    // Vygenerování hesel a vykreslení
+    function generatePasswords() {
+      outputDiv.innerHTML = "";
+      let lang = langSwitch.value;
+      let count = 1;
+      if (multiModeCheckbox.checked) {
+        count = parseInt(multiCountInput.value);
+        if (isNaN(count) || count < 1) {
+          alert("Please enter a valid number of passwords to generate.");
+          return;
+        }
+        if (count > 100) {
+          alert("Maximum 100 passwords at once.");
+          count = 100;
+        }
+      }
+      for (let i = 0; i < count; i++) {
+        const pwd = generatePassword();
+        if (!pwd) return;
+        const container = document.createElement("div");
+        container.classList.add("password-row");
+
+        const input = document.createElement("input");
+        input.type = "text";
+        input.readOnly = true;
+        input.value = pwd;
+        input.setAttribute("aria-label", "Generated password");
+        input.style.fontFamily = "monospace";
+        container.appendChild(input);
+
+        const copyBtn = document.createElement("button");
+        copyBtn.className = "copy-btn";
+        copyBtn.textContent = translations[lang]["copy"];
+        copyBtn.setAttribute("aria-label", "Copy password to clipboard");
+        copyBtn.addEventListener("click", () => copyToClipboard(pwd, copyBtn));
+        container.appendChild(copyBtn);
+
+        outputDiv.appendChild(container);
+
+        if (i === 0) {
+          showStrength(pwd, lang);
+        }
+      }
+    }
+
+    // Přepínání tématu
+    themeSwitch.addEventListener("change", () => {
+      const val = themeSwitch.value;
+      if (val === "dark") {
+        body.classList.add("dark");
+        body.classList.remove("light");
+      } else {
+        body.classList.add("light");
+        body.classList.remove("dark");
+      }
+    });
+
+    // Přepínání jazyka
+    langSwitch.addEventListener("change", () => {
+      applyTranslations(langSwitch.value);
+      // Po překladu znovu vygenerujeme hesla, aby se aktualizoval text tlačítek i síly hesla
+      generatePasswords();
+    });
+
+    // Inicializace
+    window.addEventListener("load", () => {
+      // Default theme: dark
+      themeSwitch.value = "dark";
+      body.classList.add("dark");
+      body.classList.remove("light");
+
+      applyTranslations(langSwitch.value);
+      
+      updateCustomLengthVisibility();
+
+    });
+
+    generateBtn.addEventListener("click", generatePasswords);
+  </script>
 </body>
 </html>
