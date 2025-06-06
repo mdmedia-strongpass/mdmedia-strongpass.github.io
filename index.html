@@ -1,26 +1,49 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <meta name="description" content="Free strong password generator online. Quickly and securely create strong passwords for everyday use." />
+  <meta name="description"
+    content="Free strong password generator online. Quickly and securely create strong passwords for everyday use." />
   <meta property="og:title" content="Free Strong Password Generator" />
-  <meta property="og:description" content="Create strong passwords in seconds. A fast and secure online password generator tool." />
+  <meta property="og:description"
+    content="Create strong passwords in seconds. A fast and secure online password generator tool." />
   <meta name="google-adsense-account" content="ca-pub-5066675074053349">
   <title>Free Strong Password Generator | Create Secure Passwords Online</title>
   <script src="https://cdn.jsdelivr.net/npm/zxcvbn@4.4.2/dist/zxcvbn.min.js"></script>
   <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5066675074053349"
-     crossorigin="anonymous"></script>
+    crossorigin="anonymous"></script>
   <style>
-		.hidden {
-			display: none;
-		}
+    .hidden {
+      display: none;
+    }
 
-		.strength-0 { color: #e53e3e; } /* very weak - červená */
-		.strength-1 { color: #dd6b20; } /* weak - oranžová */
-		.strength-2 { color: #d69e2e; } /* fair - žlutá */
-		.strength-3 { color: #38a169; } /* strong - zelená */
-		.strength-4 { color: #2f855a; } /* very strong - tmavě zelená */
+    .strength-0 {
+      color: #e53e3e;
+    }
+
+    /* very weak - červená */
+    .strength-1 {
+      color: #dd6b20;
+    }
+
+    /* weak - oranžová */
+    .strength-2 {
+      color: #d69e2e;
+    }
+
+    /* fair - žlutá */
+    .strength-3 {
+      color: #38a169;
+    }
+
+    /* strong - zelená */
+    .strength-4 {
+      color: #2f855a;
+    }
+
+    /* very strong - tmavě zelená */
 
     /* Reset & base */
     body {
@@ -29,9 +52,11 @@
         Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
       transition: background-color 0.3s, color 0.3s;
     }
+
     label {
       cursor: pointer;
     }
+
     input[type="number"] {
       border: 1px solid #cbd5e0;
       border-radius: 0.25rem;
@@ -40,6 +65,7 @@
       font-size: 1rem;
       transition: background-color 0.3s, color 0.3s, border-color 0.3s;
     }
+
     input[readonly] {
       background-color: #f7fafc;
       color: #1a202c;
@@ -49,6 +75,7 @@
       font-family: monospace;
       font-size: 1rem;
     }
+
     button {
       cursor: pointer;
       border: none;
@@ -57,10 +84,12 @@
       font-size: 1rem;
       transition: background-color 0.3s;
     }
+
     button:focus {
       outline: 2px solid #3182ce;
       outline-offset: 2px;
     }
+
     select {
       background-color: white;
       color: #1a202c;
@@ -76,6 +105,7 @@
       background-color: #ffffff;
       color: #1a202c;
     }
+
     body.light input[type="number"],
     body.light select,
     body.light input[readonly] {
@@ -83,14 +113,17 @@
       color: #1a202c;
       border-color: #cbd5e0;
     }
+
     body.light button.generate {
       background-color: #3182ce;
       color: white;
     }
+
     body.light button.copy-btn {
       background-color: #38a169;
       color: white;
     }
+
     body.light button.copy-btn:hover {
       filter: brightness(0.9);
     }
@@ -100,10 +133,12 @@
       background-color: #1a202c;
       color: #cbd5e0;
     }
+
     body.dark .bg-ad-placeholder {
       background-color: #2d3748;
       color: #cbd5e0;
     }
+
     body.dark input[type="number"],
     body.dark select,
     body.dark input[readonly] {
@@ -111,14 +146,17 @@
       color: #cbd5e0;
       border-color: #4a5568;
     }
+
     body.dark button.generate {
       background-color: #63b3ed;
       color: #1a202c;
     }
+
     body.dark button.copy-btn {
       background-color: #68d391;
       color: #1a202c;
     }
+
     body.dark button.copy-btn:hover {
       filter: brightness(0.9);
     }
@@ -129,6 +167,7 @@
       margin: 2rem auto;
       padding: 0 1rem;
     }
+
     .header {
       display: flex;
       justify-content: space-between;
@@ -136,59 +175,71 @@
       flex-wrap: wrap;
       gap: 1rem;
     }
+
     .title {
       font-size: 1.75rem;
       font-weight: 700;
     }
+
     .controls {
       display: flex;
       align-items: center;
       gap: 0.75rem;
       flex-wrap: wrap;
     }
+
     .form-group {
       margin-bottom: 1rem;
     }
+
     .checkbox-group {
       display: flex;
       gap: 1rem;
       flex-wrap: wrap;
       margin-bottom: 1rem;
     }
+
     .output {
       margin-top: 1rem;
       display: flex;
       flex-direction: column;
       gap: 0.5rem;
     }
+
     .password-row {
       display: flex;
       gap: 0.5rem;
       align-items: center;
     }
+
     .password-row input[readonly] {
       flex-grow: 1;
     }
+
     .strength-text {
       font-weight: 600;
       margin-top: 1rem;
     }
+
     .info-text {
       font-size: 0.875rem;
       color: inherit;
       margin-top: 0.5rem;
       max-width: 720px;
     }
+
     .affiliate-links {
       margin-top: 2rem;
       font-size: 0.875rem;
       text-align: center;
     }
+
     .affiliate-links a {
       color: inherit;
       text-decoration: underline;
       margin: 0 0.25rem;
     }
+
     .ad-placeholder {
       width: 100%;
       text-align: center;
@@ -200,12 +251,14 @@
       color: #718096;
       border-radius: 0.25rem;
     }
+
     body.dark .ad-placeholder {
       background-color: #2d3748;
       color: #a0aec0;
     }
   </style>
 </head>
+
 <body class="dark" id="body">
 
   <!-- AdSense placeholders -->
@@ -240,7 +293,8 @@
         <option value="32">32</option>
         <option value="custom">Custom</option>
       </select>
-      <input id="custom-length" type="number" min="1" max="100" placeholder="e.g. 50" class="hidden" aria-label="Custom password length input" />
+      <input id="custom-length" type="number" min="1" max="100" placeholder="e.g. 50" class="hidden"
+        aria-label="Custom password length input" />
     </div>
 
     <div class="checkbox-group" role="group" aria-labelledby="composition-label">
@@ -268,8 +322,10 @@
 
     <div class="form-group">
       <input type="checkbox" id="multi-mode" />
-      <label for="multi-mode"><span class="translatable" data-key="generate-multiple">Generate multiple passwords</span></label>
-      <input id="multi-count" type="number" min="1" max="100" placeholder="e.g. 10" class="hidden" aria-label="Number of passwords to generate" />
+      <label for="multi-mode"><span class="translatable" data-key="generate-multiple">Generate multiple
+          passwords</span></label>
+      <input id="multi-count" type="number" min="1" max="100" placeholder="e.g. 10" class="hidden"
+        aria-label="Number of passwords to generate" />
     </div>
 
     <button id="generate-btn" class="generate" aria-label="Generate password button">Generate Password</button>
@@ -278,15 +334,23 @@
 
     <p class="strength-text" aria-live="polite">Password strength: <span id="strength">-</span></p>
     <p class="info-text">Passwords are generated locally in your browser and not sent anywhere.</p>
-    
-    <p class="info-text"><strong>Why Strong Passwords Matter</strong><br>
-A strong password is your first defense against unauthorized access and data theft. It should be at least 12 characters long and include a mix of uppercase and lowercase letters, numbers, and special symbols. Avoid using common words or personal info. Using a password generator helps create unique, hard-to-crack passwords, keeping your accounts safe and secure.</p>
 
+    <p class="info-text"><strong>Why Strong Passwords Matter</strong><br>
+      A strong password is your first defense against unauthorized access and data theft. It should be at least 12
+      characters long and include a mix of uppercase and lowercase letters, numbers, and special symbols. Avoid using
+      common words or personal info. Using a password generator helps create unique, hard-to-crack passwords, keeping
+      your accounts safe and secure.</p>
+
+    <p class="info-text"><strong>Tools to help you along the way</strong><br>
+      Below are few best in class solutions for password and privacy management</p>
 
     <section class="affiliate-links" aria-label="Affiliate Links">
       <a href="https://1password.com/" target="_blank" rel="noopener">1Password</a> |
       <a href="https://bitwarden.com/" target="_blank" rel="noopener">Bitwarden</a> |
-      <a href="https://nordpass.com/" target="_blank" rel="noopener">NordPass</a>
+      <a href="https://go.nordpass.io/aff_c?offer_id=488&aff_id=125038&url_id=9356" target="_blank"
+        rel="noopener">NordPass</a>
+      <a href="https://go.nordvpn.net/aff_c?offer_id=15&aff_id=125038&url_id=902" target="_blank"
+        rel="noopener">NordVPN</a>
     </section>
   </div>
 
@@ -414,15 +478,15 @@ A strong password is your first defense against unauthorized access and data the
 
     // Změna viditelnosti custom-length podle výběru délky hesla
     function updateCustomLengthVisibility() {
-			if (lengthSelect.value === "custom") {
-				customLengthInput.classList.remove("hidden");
-				customLengthInput.focus();
-			} else {
-				customLengthInput.classList.add("hidden");
-			}
-		}
+      if (lengthSelect.value === "custom") {
+        customLengthInput.classList.remove("hidden");
+        customLengthInput.focus();
+      } else {
+        customLengthInput.classList.add("hidden");
+      }
+    }
 
-		lengthSelect.addEventListener("change", updateCustomLengthVisibility);
+    lengthSelect.addEventListener("change", updateCustomLengthVisibility);
 
     // Změna viditelnosti multi-count podle zaškrtnutí multiple passwords
     multiModeCheckbox.addEventListener("change", () => {
@@ -462,22 +526,22 @@ A strong password is your first defense against unauthorized access and data the
     }
 
     // Zobrazení síly hesla (pomocí zxcvbn)
-		function showStrength(pwd, lang) {
-			if (!pwd) {
-				strengthSpan.textContent = "-";
-				strengthSpan.className = ""; // odeber třídy
-				return;
-			}
-			const t = translations[lang] || translations.en;
-			const result = zxcvbn(pwd);
-			const score = result.score; // 0 - 4
-			strengthSpan.textContent = t[`password-strength-${score}`] || "-";
+    function showStrength(pwd, lang) {
+      if (!pwd) {
+        strengthSpan.textContent = "-";
+        strengthSpan.className = ""; // odeber třídy
+        return;
+      }
+      const t = translations[lang] || translations.en;
+      const result = zxcvbn(pwd);
+      const score = result.score; // 0 - 4
+      strengthSpan.textContent = t[`password-strength-${score}`] || "-";
 
-			// Odeber všechny strength-* třídy
-			strengthSpan.className = "";
-			// Přidej aktuální třídu podle skóre
-			strengthSpan.classList.add(`strength-${score}`);
-		}
+      // Odeber všechny strength-* třídy
+      strengthSpan.className = "";
+      // Přidej aktuální třídu podle skóre
+      strengthSpan.classList.add(`strength-${score}`);
+    }
 
 
     // Kopírování hesla do schránky
@@ -563,7 +627,7 @@ A strong password is your first defense against unauthorized access and data the
       body.classList.remove("light");
 
       applyTranslations(langSwitch.value);
-      
+
       updateCustomLengthVisibility();
 
     });
@@ -571,4 +635,5 @@ A strong password is your first defense against unauthorized access and data the
     generateBtn.addEventListener("click", generatePasswords);
   </script>
 </body>
+
 </html>
